@@ -1,14 +1,22 @@
+#!/usr/bin/env python3
 import psycopg2
 DBNAME = "news"
 
 
 def query_db(query):
-    db = psycopg2.connect(database=DBNAME)
-    c = db.cursor()
-    c.execute(query)
-    query_result = c.fetchall()
-    db.close()
-    return query_result
+    try:
+        db = psycopg2.connect(database=DBNAME)
+    except psycopg2.Error as e:
+        print "Unable to connect"
+        print e.pgerror
+        print e.diag.message_detail
+        sys.exit(1)
+    else:
+        c = db.cursor()
+        c.execute(query)
+        query_result = c.fetchall()
+        db.close()
+        return query_result
 
 
 def popular_three_articles():
